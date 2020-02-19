@@ -40,11 +40,11 @@ const writeCounter = (count, callback) => {
 
 exports.getNextUniqueId = () => {
   // this function needs to...
-    // read the contents of counterFile
+  // read the contents of counterFile
 
-    // set new value of counter to that number + 1
-    // write the new counter value inside counter.txt and POST to server
-    // and return it to the requesting function
+  // set new value of counter to that number + 1
+  // write the new counter value inside counter.txt and POST to server
+  // and return it to the requesting function
 
 
   counter = counter + 1;
