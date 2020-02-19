@@ -36,8 +36,8 @@ exports.readAll = callback => {
       // create a new array to store these objects
       // iterate over fileNames array
       // for each element in fileNames take the first 5 characters and push them to the new array in the form { id: first5, text: first5 }
-      var names = _.map(fileNames, (text) => {
-        let obj = {id: text.slice(0,5), text: text.slice(0,5)}
+      var names = _.map(fileNames, text => {
+        let obj = { id: text.slice(0, 5), text: text.slice(0, 5) };
         return obj;
       });
       callback(null, names);
@@ -51,12 +51,19 @@ exports.readAll = callback => {
 };
 
 exports.readOne = (id, callback) => {
-  var text = items[id];
-  if (!text) {
-    callback(new Error(`No item with id: ${id}`));
-  } else {
-    callback(null, { id, text });
-  }
+  //find a new method that reads a specific file with a given id
+  //construct the err first method pattern
+  //for else, read the contents of that file id
+  //then invoke the callback on that content in the file
+
+  fs.readFile(`${exports.dataDir}/${id}.txt`, (err, fileContent) => {
+    if (err) {
+      // throw err;
+      callback(new Error(`No item with id: ${id}`), null);
+    } else {
+      callback(null, { id: id, text: fileContent.toString() });
+    }
+  });
 };
 
 exports.update = (id, text, callback) => {
