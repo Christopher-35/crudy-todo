@@ -1,19 +1,44 @@
-const fs = require('fs');
-const path = require('path');
-const _ = require('underscore');
-const counter = require('./counter');
+const fs = require("fs");
+const path = require("path");
+const _ = require("underscore");
+const counter = require("./counter");
 
 var items = {};
 
 // Public API - Fix these CRUD functions ///////////////////////////////////////
 
 exports.create = (text, callback) => {
-  var id = counter.getNextUniqueId();
-  items[id] = text;
-  callback(null, { id, text });
+  // var id = counter.getNextUniqueId();
+  // // Todo.create(text, (err) => {
+
+  // // })
+  // fs.writeFile(path.join(exports.dataDir, id), text, (err) => {
+  //   if (err){ throw `${err}`;
+  // }else{
+  //   callback(null, { id, text });
+  //   console.log('The file has been saved!');
+  // }
+  // });
+
+  counter.getNextUniqueId((err, data) => {
+    if (err) {
+      console.log("error getting next ID: ", `${err}`);
+    } else {
+      fs.writeFile(path.join(exports.dataDir, `${data}.txt`), text, err => {
+        if (err) {
+          throw `${err}`;
+        } else {
+          callback(null, { id: data, text: text });
+          console.log("The file has been saved!");
+        }
+      });
+    }
+  });
+  // items[id] = text;
+  // callback(null, { id, text });
 };
 
-exports.readAll = (callback) => {
+exports.readAll = callback => {
   var data = _.map(items, (text, id) => {
     return { id, text };
   });
@@ -52,7 +77,7 @@ exports.delete = (id, callback) => {
 
 // Config+Initialization code -- DO NOT MODIFY /////////////////////////////////
 
-exports.dataDir = path.join(__dirname, 'data');
+exports.dataDir = path.join(__dirname, "data");
 
 exports.initialize = () => {
   if (!fs.existsSync(exports.dataDir)) {
