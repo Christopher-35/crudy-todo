@@ -39,6 +39,14 @@ const writeCounter = (count, callback) => {
 // Public API - Fix this function //////////////////////////////////////////////
 
 exports.getNextUniqueId = () => {
+  // this function needs to...
+    // read the contents of counterFile
+
+    // set new value of counter to that number + 1
+    // write the new counter value inside counter.txt and POST to server
+    // and return it to the requesting function
+
+
   counter = counter + 1;
   return zeroPaddedNumber(counter);
 };
