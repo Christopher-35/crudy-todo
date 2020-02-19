@@ -8,18 +8,6 @@ var items = {};
 // Public API - Fix these CRUD functions ///////////////////////////////////////
 
 exports.create = (text, callback) => {
-  // var id = counter.getNextUniqueId();
-  // // Todo.create(text, (err) => {
-
-  // // })
-  // fs.writeFile(path.join(exports.dataDir, id), text, (err) => {
-  //   if (err){ throw `${err}`;
-  // }else{
-  //   callback(null, { id, text });
-  //   console.log('The file has been saved!');
-  // }
-  // });
-
   counter.getNextUniqueId((err, data) => {
     if (err) {
       console.log("error getting next ID: ", `${err}`);
@@ -34,15 +22,32 @@ exports.create = (text, callback) => {
       });
     }
   });
-  // items[id] = text;
-  // callback(null, { id, text });
 };
 
 exports.readAll = callback => {
-  var data = _.map(items, (text, id) => {
-    return { id, text };
+  // figure out how to read filenames within /data directory
+  // extract just the filename without the '.txt' suffix
+  // push each of those strings to an array
+  fs.readdir(exports.dataDir, (err, fileNames) => {
+    if (err) {
+      console.log(`error is.. ${err}`);
+    } else {
+      console.log(`fileNames === `, fileNames);
+      // create a new array to store these objects
+      // iterate over fileNames array
+      // for each element in fileNames take the first 5 characters and push them to the new array in the form { id: first5, text: first5 }
+      var names = _.map(fileNames, (text) => {
+        let obj = {id: text.slice(0,5), text: text.slice(0,5)}
+        return obj;
+      });
+      callback(null, names);
+    }
   });
-  callback(null, data);
+
+  // var data = _.map(items, (text, id) => {
+  //   return { id, text };
+  // });
+  // callback(null, data);
 };
 
 exports.readOne = (id, callback) => {
