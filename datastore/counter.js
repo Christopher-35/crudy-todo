@@ -44,12 +44,13 @@ exports.getNextUniqueId = callback => {
   //
   readCounter((err, counter) => {
     if (err) {
-      console.log("error reading counter: ", err);
+      // console.log("error reading counter: ", err);
+      callback(err, null);
     } else {
       counter++;
       writeCounter(counter, (err, strCount) => {
         if (err) {
-          throw "error writing counter";
+          callback(err, null);
         } else {
           callback(null, strCount);
         }

@@ -11,10 +11,11 @@ exports.create = (text, callback) => {
   counter.getNextUniqueId((err, data) => {
     if (err) {
       console.log("error getting next ID: ", `${err}`);
+      callback(err, null);
     } else {
       fs.writeFile(path.join(exports.dataDir, `${data}.txt`), text, err => {
         if (err) {
-          throw `${err}`;
+          callback(err, null);
         } else {
           callback(null, { id: data, text: text });
           console.log("The file has been saved!");
@@ -31,6 +32,7 @@ exports.readAll = callback => {
   fs.readdir(exports.dataDir, (err, fileNames) => {
     if (err) {
       console.log(`error is.. ${err}`);
+      callback(err, null);
     } else {
       console.log(`fileNames === `, fileNames);
       // create a new array to store these objects
@@ -67,24 +69,40 @@ exports.readOne = (id, callback) => {
 };
 
 exports.update = (id, text, callback) => {
-  var item = items[id];
-  if (!item) {
-    callback(new Error(`No item with id: ${id}`));
-  } else {
-    items[id] = text;
-    callback(null, { id, text });
-  }
+
+  exports.readOne(id, function(err, content) {
+    if (err) {
+      callback(err, null);
+    } else {
+      fs.writeFile(path.join(exports.dataDir, `${id}.txt`), text, err => {
+        if (err) {
+          callback(err, null);
+        } else {
+          callback(null, { id: id, text: text.toString() });
+        }
+      });
+    }
+  });
+
 };
 
 exports.delete = (id, callback) => {
-  var item = items[id];
-  delete items[id];
-  if (!item) {
-    // report an error if item not found
-    callback(new Error(`No item with id: ${id}`));
-  } else {
-    callback();
-  }
+  fs.unlink(`${exports.dataDir}/${id}.txt`, (err) => {
+    if (err) {
+      callback(new Error(`No item with id: ${id}`), null);
+    } else {
+      console.log('path/file.txt was deleted');
+      callback();
+    }
+  });
+  // var item = items[id];
+  // delete items[id];
+  // if (!item) {
+  //   // report an error if item not found
+  //   callback(new Error(`No item with id: ${id}`));
+  // } else {
+  //   callback();
+  // }
 };
 
 // Config+Initialization code -- DO NOT MODIFY /////////////////////////////////

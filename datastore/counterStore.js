@@ -14,6 +14,27 @@
 //   }
 // });
 
+// rewriting update function
+exports.update = (id, text, callback) => {
+  var todoPath = `${exports.dataDir}/${id}.txt`;
+  fs.readFile(todoPath, (err, fileData) => {
+    if (err) {
+      callback(err, null);
+    } else {
+      fs.writeFile(todoPath, text, (err) => {
+      });
+    }
+  });
+
+  var item = items[id];
+  if (!item) {
+    callback(new Error(`No item with id: ${id}`));
+  } else {
+    items[id] = text;
+    callback(null, { id, text });
+  }
+};
+
 let counter = 0;
 
 module.exports.counter = counter;
