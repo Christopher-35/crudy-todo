@@ -2,6 +2,7 @@ const fs = require("fs");
 const path = require("path");
 const _ = require("underscore");
 const counter = require("./counter");
+const Promise = require('bluebird');
 
 var items = {};
 
@@ -25,7 +26,7 @@ exports.create = (text, callback) => {
   });
 };
 
-exports.readAll = callback => {
+exports.readAll = (callback) => {
   // figure out how to read filenames within /data directory
   // extract just the filename without the '.txt' suffix
   // push each of those strings to an array
@@ -35,14 +36,29 @@ exports.readAll = callback => {
       callback(err, null);
     } else {
       console.log(`fileNames === `, fileNames);
-      // create a new array to store these objects
-      // iterate over fileNames array
-      // for each element in fileNames take the first 5 characters and push them to the new array in the form { id: first5, text: first5 }
-      var names = _.map(fileNames, text => {
-        let obj = { id: text.slice(0, 5), text: text.slice(0, 5) };
-        return obj;
+      // iterate over fileNames array and invoke fs.readFile with each fileName
+      let promises = _.map(fileNames, (name) => {
+        return new Promise (function (resolve, reject) {
+          fs.readFile(exports.dataDir + '/' + name, (err, fileData) => {
+            if (err) {
+              reject(err);
+            } else {
+              resolve({id: name.slice(0,5), text:fileData.toString() });
+            }
+          });
+        });
       });
-      callback(null, names);
+      console.log('promises===', promises);
+      return Promise.all(promises);
+      // callback(null, names);
+
+
+
+      // console.log('all===', all);
+      // var names = _.map(fileNames, (idString) => {
+      //   let obj = { id: idString.slice(0, 5), text: idString.slice(0, 5) };
+      //   return obj;
+      // });
     }
   });
 
