@@ -41,13 +41,13 @@ exports.readAll = (callback) => { // we never invoke this callback with the succ
             if (err) {
               reject(err);
             } else {
-              resolve({id: name.slice(0,5), text:fileData.toString() });
+              resolve({id: name.slice(0, 5), text: fileData.toString() });
             }
           });
         });
       });
       Promise.all(promises)
-        .then(function(arr){
+        .then(function(arr) {
           console.log('promisees ===>', promises);
           console.log('arr ------> ', arr);
           callback(null, arr);
@@ -110,3 +110,4 @@ exports.initialize = () => {
     fs.mkdirSync(exports.dataDir);
   }
 };
+
