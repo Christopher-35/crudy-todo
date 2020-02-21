@@ -26,14 +26,12 @@ exports.create = (text, callback) => {
   });
 };
 
-exports.readAll = (callback) => {
-  // figure out how to read filenames within /data directory
-  // extract just the filename without the '.txt' suffix
-  // push each of those strings to an array
+exports.readAll = (callback) => { // we never invoke this callback with the success case for the whole function
+
   fs.readdir(exports.dataDir, (err, fileNames) => {
     if (err) {
       console.log(`error is.. ${err}`);
-      callback(err, null);
+      callback(err, null); // here we invoke the callback with the error case
     } else {
       console.log(`fileNames === `, fileNames);
       // iterate over fileNames array and invoke fs.readFile with each fileName
@@ -48,24 +46,14 @@ exports.readAll = (callback) => {
           });
         });
       });
-      console.log('promises===', promises);
-      return Promise.all(promises);
-      // callback(null, names);
-
-
-
-      // console.log('all===', all);
-      // var names = _.map(fileNames, (idString) => {
-      //   let obj = { id: idString.slice(0, 5), text: idString.slice(0, 5) };
-      //   return obj;
-      // });
+      Promise.all(promises)
+        .then(function(arr){
+          console.log('promisees ===>', promises);
+          console.log('arr ------> ', arr);
+          callback(null, arr);
+        });
     }
   });
-
-  // var data = _.map(items, (text, id) => {
-  //   return { id, text };
-  // });
-  // callback(null, data);
 };
 
 exports.readOne = (id, callback) => {
@@ -111,14 +99,6 @@ exports.delete = (id, callback) => {
       callback();
     }
   });
-  // var item = items[id];
-  // delete items[id];
-  // if (!item) {
-  //   // report an error if item not found
-  //   callback(new Error(`No item with id: ${id}`));
-  // } else {
-  //   callback();
-  // }
 };
 
 // Config+Initialization code -- DO NOT MODIFY /////////////////////////////////
